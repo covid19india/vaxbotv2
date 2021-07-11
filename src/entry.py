@@ -81,23 +81,27 @@ def entry(bot, update):
             arr = findEntryID(text)
             if arr:
                 language_index = getIndex(arr, text)
+                logging.info(arr)
                 to_reply = findEntryById(arr[2])
-                buttons = arr[3].split(",")
-                button_list = []
-                if buttons[0]:
-                    for b in buttons:
-                        button_entries = findEntryById(b)
-                        if not button_entries[language_index]:
-                            for bb in button_entries[4:]:
-                                if bb:
-                                    b_text = bb
-                                    break
-                        else:
-                            b_text = button_entries[language_index]
-                        button_list.append([b_text])
-                bot.sendMessage(
-                    chat_id=chat_id,
-                    reply_to_message_id=update.message.message_id,
-                    text=to_reply[language_index],
-                    reply_markup=ReplyKeyboardMarkup(button_list, resize_keyboard=True),
-                )
+                if to_reply:
+                    logging.info("to_reply")
+                    logging.info(to_reply)
+                    buttons = arr[3].split(",")
+                    button_list = []
+                    if buttons[0]:
+                        for b in buttons:
+                            button_entries = findEntryById(b)
+                            if not button_entries[language_index]:
+                                for bb in button_entries[4:]:
+                                    if bb:
+                                        b_text = bb
+                                        break
+                            else:
+                                b_text = button_entries[language_index]
+                            button_list.append([b_text])
+                    bot.sendMessage(
+                        chat_id=chat_id,
+                        reply_to_message_id=update.message.message_id,
+                        text=to_reply[language_index],
+                        reply_markup=ReplyKeyboardMarkup(button_list, resize_keyboard=True),
+                    )
