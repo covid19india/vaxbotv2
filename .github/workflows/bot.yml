@@ -33,7 +33,7 @@ jobs:
           ${{ runner.os }}-pip-
           ${{ runner.os }}-
     - name: Install Python dependencies
-      run: pip install -r req.txt
+      run: pip install -r requirements.txt
     - name: Start Bot
       run: |
         python main.py

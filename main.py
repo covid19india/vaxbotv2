@@ -3,7 +3,7 @@
 
 import logging
 import telegram
-from telegram.error import NetworkError, Unauthorized
+from telegram.error import NetworkError, Unauthorized, TimedOut
 from time import sleep
 import os
 from time import time
@@ -56,6 +56,10 @@ def main():
             logging.error(update)
             # The user has removed or blocked the bot.
             # update_id += 1
+        except TimedOut:
+            logging.error("Timeout")
+            traceback.print_exc()
+            sleep(5)
         except Exception as e:
             logging.error("Generic Error")
             logging.error(e)
