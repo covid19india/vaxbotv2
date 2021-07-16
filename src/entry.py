@@ -4,6 +4,7 @@ from telegram import (
     ReplyKeyboardRemove,
 )
 from pytz import timezone
+from .gsheets_main import upload_to_sheets
 
 # from .gsheets_main import upload_to_sheets
 import csv
@@ -65,11 +66,28 @@ def getIndex(entries, text):
     return -1
 
 
+user_log = []
+
+
 def entry(bot, update):
-    logging.info(update)  # comment out in production
+    global user_log
+    # logging.info(update)  # comment out in production
     if update.message and update.message.text:
         chat_id = update.message.chat_id
         text = update.message.text
+        user_log.append(
+            [
+                getISTTime(update.message.date),
+                chat_id,
+                update.message.from_user.first_name,
+                update.message.from_user.username,
+                text,
+                update.message.message_id,
+            ]
+        )
+        if len(user_log) > 5:
+            upload_to_sheets(user_log)
+            user_log = []
         logging.info(text)
         if text == "/update_data":
             syncSheetData()
@@ -81,11 +99,8 @@ def entry(bot, update):
             arr = findEntryID(text)
             if arr:
                 language_index = getIndex(arr, text)
-                logging.info(arr)
                 to_reply = findEntryById(arr[2])
                 if to_reply:
-                    logging.info("to_reply")
-                    logging.info(to_reply)
                     buttons = arr[3].split(",")
                     button_list = []
                     if buttons[0]:
@@ -103,5 +118,7 @@ def entry(bot, update):
                         chat_id=chat_id,
                         reply_to_message_id=update.message.message_id,
                         text=to_reply[language_index],
-                        reply_markup=ReplyKeyboardMarkup(button_list, resize_keyboard=True),
+                        reply_markup=ReplyKeyboardMarkup(
+                            button_list, resize_keyboard=True
+                        ),
                     )

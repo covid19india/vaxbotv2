@@ -7,7 +7,7 @@ from telegram.error import NetworkError, Unauthorized, TimedOut
 from time import sleep
 import os
 from time import time
-from src.entry import entry, syncSheetData  # , user_log
+from src.entry import entry, syncSheetData, user_log
 from src.gsheets_main import upload_to_sheets
 import sys
 import traceback
@@ -22,6 +22,7 @@ try:
     BOT_TOKEN = os.environ["BOT_TOKEN"]
 except KeyError:
     logging.error("Bot credentials not found in environment")
+    sys.exit("End program with error")
 
 # How long the container exist
 LIFESPAN = 7200
@@ -64,13 +65,13 @@ def main():
             logging.error("Generic Error")
             logging.error(e)
             logging.info("uploading pending stuff")
-            # upload_to_sheets(user_log)
+            upload_to_sheets(user_log)
             traceback.print_exc()
             sleep(5)
             sys.exit("End program with error")
         if int(time()) - start_time > LIFESPAN:
             logging.info("uploading pending stuff")
-            # upload_to_sheets(user_log)
+            upload_to_sheets(user_log)
             logging.info("Enough for the day! Passing on to next Meeseek")
             with open("/tmp/update_id", "w") as the_file:
                 the_file.write(str(update_id))
