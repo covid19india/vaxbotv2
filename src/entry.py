@@ -85,7 +85,7 @@ def entry(bot, update):
                 update.message.message_id,
             ]
         )
-        if len(user_log) > 5:
+        if len(user_log) > 24:
             upload_to_sheets(user_log)
             user_log = []
         logging.info(text)
