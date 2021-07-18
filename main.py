@@ -50,7 +50,7 @@ def main():
             print("Network Error")
             print(e)
             traceback.print_exc()
-            logging.error(update)
+            # logging.error(update)
             sleep(1)
         except Unauthorized:
             print("Unauthorized")
